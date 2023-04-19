@@ -1,4 +1,6 @@
 const { obtenerTodosLosUsuarios, obtenerUsuarioPorId, crearUsuario, editarUsuario, eliminarUsuario } = require('../services/user.service');
+const { validationResult } = require('express-validator');
+const bcrypt = require('bcrypt');
 
 const getAllUsers = async(req, res) => {
   try {
@@ -27,7 +29,13 @@ const getUserById = async(req, res) => {
 
 const createUser = async(req, res) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors : errors.array() });
+    }
+    const saltRound = bcrypt.genSaltSync(10);
     const userData = req.body;
+    userData.password = bcrypt.hashSync(userData.password, saltRound);    
     const resp = await crearUsuario(userData);
     res.status(201).json(resp);
   } catch (error) {

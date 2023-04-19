@@ -17,11 +17,15 @@ const userSchema = Schema({
   },
   email: {
     type: String,
-    required: true,
+    
   },
   disabled: {
     type: Boolean,
     default: false,
+  },
+  password: {
+    type: String,
+    required: true,
   },
 });
 
